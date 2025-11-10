@@ -13,7 +13,7 @@ const app = express(); // Express is a web framework for Node.js
 
 // Enable CORS so front-end can communicate with backend
 app.use(cors({
-    origin: 'http://localhost:5173', // Your front-end URL
+    origin: ['http://localhost:5173', 'https://your-frontend.onrender.com'], // Add your deployed frontend URL here
     credentials: true // Allows sending cookies and auth headers if needed
 }));
 
