@@ -4,23 +4,34 @@ import User from "../models/user.js"; // Importing the User model to interact wi
 import bcrypt from "bcrypt"; // Importing bcrypt just to hash passwords securely
 import jwt from "jsonwebtoken"; // Importing jsonwebtoken to create JWT tokens
 
-// Registring a new user
-export const registerUser = async ( req, res ) => { // Using async/await for handling asynchronous database operations
-    try { // Using try/catch blocks for error handling
-        const { username, password } = req.body; // Getting the username and password from the req body that comes from the user
-        if (!username || !password) { // If one of the fields is missing, return an error
-            return res.status(400).json({ message: "Username and password are required" }); // Validating input
-        }
-        // Hashing the password before saving it to the database
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds for hashing which makes it extremely difficult to crack
+// Register a new user (modified)
+export const registerUser = async (req, res) => {
+  const { username, password } = req.body;
 
-        // Creating a new user in the database
-        const newUser = await User.create({ username, password: hashedPassword }); // Usinf hashedPassword instead of password when creating the user
+  // Basic validation
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required' });
+  }
 
-        res.status(201).json({ message: "User registered successfully", user: newUser }); // Sending a success response that the user was registered
-    } catch (error) { // Returning any errors that might occur when registering as internal server error
-        res.status(500).json({ message: "Error registering user", error : error.message });
+  try {
+    // Check if the username already exists
+    const existingUser = await User.findOne({ where: { username } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
     }
+
+    // Hash the password before storing
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the user in the database
+    await User.create({ username, password: hashedPassword });
+
+    // Success response
+    return res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error('Registration error:', error); // Log the exact error
+    return res.status(500).json({ message: 'Error registering user', error: error.message });
+  }
 };
 
 // User login
