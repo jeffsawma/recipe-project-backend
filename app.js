@@ -11,11 +11,15 @@ import errorHandler  from "./middlewares/errorHandler.js"; // Importing the erro
 // Creating a new Express app
 const app = express(); // Express is a web framework for Node.js
 
+// Code for CORS (modified)
 // Enable CORS so front-end can communicate with backend
-app.use(cors({
-    origin: ['http://localhost:5173', 'https://your-frontend.onrender.com'], // Add your deployed frontend URL here
-    credentials: true // Allows sending cookies and auth headers if needed
-}));
+const corsOptions = {
+    origin: '*', // Accepter toutes les origines
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Autoriser ces méthodes
+    allowedHeaders: ['Content-Type', 'Authorization'], // Autoriser ces en-têtes
+  };
+ 
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON bodies in incoming requests
 app.use(express.json()); // Parsing JSON data from the request body
