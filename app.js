@@ -12,9 +12,20 @@ import errorHandler  from "./middlewares/errorHandler.js"; // Importing the erro
 const app = express(); // Express is a web framework for Node.js
 
 // Enable CORS so front-end can communicate with backend
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://recipe-project-frontend-vbr6.onrender.com'
+];
+
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://your-frontend.onrender.com'], // Add your deployed frontend URL here
-    credentials: true // Allows sending cookies and auth headers if needed
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 
 // Middleware to parse JSON bodies in incoming requests
