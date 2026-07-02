@@ -58,7 +58,7 @@ export const updateRecipe = async (req, res) => {
         const userId = req.userId; // Getting the user ID from the authenticated request
 
         const recipe = await Recipe.findByPk(id); // Find recipe by the id of the recipe using findByPk
-        if (!recipe) // 
+        if (!recipe) 
             return res.status(404).json({ message: "Recipe not found" }); // If recipe doesn't exist
 
         // Ensures user owns the recipe in order to update it (Only the user who created the recipe can update it based on the instructions of the project)
