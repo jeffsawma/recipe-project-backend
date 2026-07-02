@@ -13,26 +13,28 @@ const app = express(); // Express is a web framework for Node.js
 
 // CORS configuration
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://recipe-project-frontend-vbr6.onrender.com'
+  "http://localhost:5173",
+  "https://recipe-project-frontend-vbr6.onrender.com",
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  }),
+);
 
 // Middleware to parse JSON bodies in incoming requests
 app.use(express.json()); // Parsing JSON data from the request body
 
-// Mounting routes 
-app.use("/users", userRoutes); // Mounting the user routes at "/users" path 
+// Mounting routes
+app.use("/users", userRoutes); // Mounting the user routes at "/users" path
 app.use("/recipes", recipeRoutes); // Mounting the recipe routes at "/recipes" path
 
 // Error handling middleware
@@ -42,7 +44,8 @@ app.use(errorHandler); // Using the error handler middleware to handle errors
 const PORT = process.env.PORT || 3000;
 
 // Syncing the database and starting the server
-sequelize.sync({ alter: true })
+sequelize
+  .sync()
   .then(() => {
     console.log("Database synced successfully.");
     app.listen(PORT, () => {
@@ -55,4 +58,3 @@ sequelize.sync({ alter: true })
 
 // Exporting the app instance
 export default app;
-
